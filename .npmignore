@@ -1,0 +1,35 @@
+# Source files (only ship dist/)
+src/
+tsconfig.json
+
+# Development files
+.gitignore
+.eslintrc*
+.prettierrc*
+jest.config.js
+
+# Documentation (README is included)
+docs/
+examples/
+
+# IDE and OS files
+.vscode/
+.idea/
+.DS_Store
+
+# Test files
+**/*.test.ts
+**/*.test.js
+**/*.spec.ts
+**/*.spec.js
+__tests__/
+test/
+coverage/
+
+# Development dependencies (already excluded by default)
+node_modules/
+
+# Logs and temporary files
+*.log
+.tmp/
+.temp/

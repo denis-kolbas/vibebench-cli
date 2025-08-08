@@ -1,7 +1,7 @@
 import fetch from 'node-fetch';
 import { VoteRequest, VoteResponse, LeaderboardEntry, RateLimitStatus, APIError } from './types.js';
 
-const API_BASE_URL = 'https://vibebench.com';
+const API_BASE_URL = 'https://vibebench.io';
 
 export class VibeBenchAPI {
   private baseUrl: string;
@@ -21,6 +21,22 @@ export class VibeBenchAPI {
       });
 
       if (!response.ok) {
+        if (response.status === 429) {
+          // Handle rate limiting with better error message
+          try {
+            const errorData = await response.json() as any;
+            if (errorData.resetTime) {
+              const resetDate = new Date(errorData.resetTime);
+              const now = new Date();
+              const minutesUntilReset = Math.ceil((resetDate.getTime() - now.getTime()) / (1000 * 60));
+              throw new Error(`You have used all your votes for now. You can vote again in ${minutesUntilReset} minute${minutesUntilReset !== 1 ? 's' : ''}.`);
+            }
+          } catch {
+            // Fallback if parsing fails
+          }
+          throw new Error('You have used all your votes for now. Please wait before voting again.');
+        }
+        
         const error = await response.json() as APIError;
         throw new Error(error.message || `HTTP ${response.status}: ${response.statusText}`);
       }
@@ -39,8 +55,8 @@ export class VibeBenchAPI {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
 
-      const data = await response.json() as { models: LeaderboardEntry[] };
-      return data.models;
+      const data = await response.json() as { data: LeaderboardEntry[] };
+      return data.data;
     } catch (error) {
       throw new Error(`Failed to fetch leaderboard: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }

@@ -11,9 +11,9 @@ export interface VoteRequest {
 
 export interface VoteResponse {
   success: boolean;
-  message: string;
-  model?: ModelData;
-  remaining?: number;
+  message?: string;
+  updatedModel?: ModelData;
+  rateLimitRemaining?: number;
   resetTime?: number;
 }
 

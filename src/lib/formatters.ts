@@ -1,90 +1,101 @@
-import chalk from 'chalk';
+import Table from 'cli-table3';
 import { LeaderboardEntry, ModelData, VoteType } from './types.js';
+import { typography, voteStyles, messages, tableConfig } from './styles.js';
 
 export function formatVoteType(voteType: VoteType): string {
   switch (voteType) {
     case 'fire':
-      return chalk.green('🔥 Fire');
+      return voteStyles.fire('Fire');
     case 'mid':
-      return chalk.yellow('😊 Mid');
+      return voteStyles.mid('Mid');
     case 'cursed':
-      return chalk.red('💀 Cursed');
+      return voteStyles.cursed('Cursed');
   }
 }
 
 export function formatVibeScore(score: number): string {
-  if (score >= 80) return chalk.green(`${score.toFixed(1)}`);
-  if (score >= 60) return chalk.yellow(`${score.toFixed(1)}`);
-  if (score >= 40) return chalk.orange(`${score.toFixed(1)}`);
-  return chalk.red(`${score.toFixed(1)}`);
+  if (score >= 80) return voteStyles.fire(`${score.toFixed(1)}`);
+  if (score >= 60) return voteStyles.mid(`${score.toFixed(1)}`);
+  if (score >= 40) return typography.highlight(`${score.toFixed(1)}`);
+  return voteStyles.cursed(`${score.toFixed(1)}`);
 }
 
 export function formatModelStats(model: ModelData): string {
-  const lines = [
-    chalk.bold.white(`📊 ${model.name}`),
-    `${chalk.gray('Slug:')} ${model.slug}`,
-    `${chalk.gray('Category:')} ${model.category}`,
-    `${chalk.gray('Vibe Score:')} ${formatVibeScore(model.vibeScore)}`,
-    '',
-    chalk.bold('Vote Breakdown:'),
-    `  🔥 Fire: ${chalk.green(model.votes.fire.toString())}`,
-    `  😊 Mid: ${chalk.yellow(model.votes.mid.toString())}`,
-    `  💀 Cursed: ${chalk.red(model.votes.cursed.toString())}`,
-    `  ${chalk.gray('Total:')} ${model.votes.total}`,
-  ];
+  const table = new Table({
+    ...tableConfig,
+    head: [
+      typography.meta('Rank'),
+      typography.meta('Model'),
+      typography.meta('Vibe Score'),
+      typography.meta('Fire'),
+      typography.meta('Mid'),
+      typography.meta('Cursed')
+    ]
+  });
 
-  if ('rank' in model) {
-    lines.splice(1, 0, `${chalk.gray('Rank:')} #${(model as LeaderboardEntry).rank}`);
-  }
+  const rank = ('rank' in model && model.rank) ? `#${(model as LeaderboardEntry).rank}` : '-';
+  
+  table.push([
+    typography.highlight(rank),
+    typography.data(model.slug || 'Unknown'),
+    formatVibeScore(model.vibeScore || 0),
+    voteStyles.fire((model.votes?.fire || 0).toString()),
+    voteStyles.mid((model.votes?.mid || 0).toString()),
+    voteStyles.cursed((model.votes?.cursed || 0).toString())
+  ]);
 
-  return lines.join('\\n');
+  return '\n' + table.toString();
 }
 
 export function formatLeaderboard(models: LeaderboardEntry[], count: number = 10): string {
   const topModels = models.slice(0, count);
   
-  const lines = [
-    chalk.bold.white(`🏆 Top ${count} Models`),
-    '',
-  ];
+  const table = new Table({
+    ...tableConfig,
+    head: [
+      typography.meta('Rank'),
+      typography.meta('Model'),
+      typography.meta('Vibe Score'),
+      typography.meta('Fire'),
+      typography.meta('Mid'),
+      typography.meta('Cursed')
+    ]
+  });
 
   for (const model of topModels) {
-    const rank = chalk.gray(`#${model.rank.toString().padStart(2)}`);
-    const score = formatVibeScore(model.vibeScore);
-    const name = chalk.white(model.name);
-    const votes = chalk.gray(`(${model.votes.total} votes)`);
-    
-    lines.push(`${rank} ${score.padEnd(10)} ${name} ${votes}`);
+    table.push([
+      typography.highlight(`#${model.rank}`),
+      typography.data(model.slug),
+      formatVibeScore(model.vibeScore),
+      voteStyles.fire(model.votes.fire.toString()),
+      voteStyles.mid(model.votes.mid.toString()),
+      voteStyles.cursed(model.votes.cursed.toString())
+    ]);
   }
 
-  return lines.join('\\n');
+  return '\n' + typography.header(`Top ${count} Models`) + '\n\n' + table.toString();
 }
 
-export function formatRateLimitStatus(remaining: number, resetTime: number): string {
+export function formatRateLimitStatus(remaining: number, resetTime: number, maxVotes: number = 3): string {
   const resetDate = new Date(resetTime);
   const now = new Date();
   const minutesUntilReset = Math.ceil((resetDate.getTime() - now.getTime()) / (1000 * 60));
   
-  if (remaining <= 0) {
-    return chalk.red(`⏰ No votes remaining. Resets in ${minutesUntilReset} minutes.`);
-  }
-  
-  const color = remaining <= 1 ? chalk.yellow : chalk.green;
-  return color(`✅ ${remaining} vote${remaining !== 1 ? 's' : ''} remaining. Resets in ${minutesUntilReset} minutes.`);
+  return typography.highlight(`${remaining}/${maxVotes} votes remaining. Next vote resets in ${minutesUntilReset} minutes.`);
 }
 
 export function formatSuccess(message: string, details?: string): string {
-  const lines = [chalk.green('✅ ' + message)];
+  const lines = [messages.success(message)];
   if (details) {
-    lines.push(chalk.gray(details));
+    lines.push(typography.meta(details));
   }
-  return lines.join('\\n');
+  return lines.join('\n');
 }
 
 export function formatError(message: string, details?: string): string {
-  const lines = [chalk.red('❌ ' + message)];
+  const lines = [messages.error(message)];
   if (details) {
-    lines.push(chalk.gray(details));
+    lines.push(typography.meta(details));
   }
-  return lines.join('\\n');
+  return lines.join('\n');
 }
