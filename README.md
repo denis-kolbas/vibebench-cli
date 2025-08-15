@@ -4,15 +4,16 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js Version](https://img.shields.io/node/v/vibebench.svg)](https://nodejs.org/en/)
 
-> **Vote on AI models directly from your terminal** ⚡
+> **CLI tool for participating in voting on AI vibes on VibeBench.** ⚡  
+> Visit [vibebench.io](https://vibebench.io) to see the live leaderboard and vote on the web
 
-My personal CLI tool for participating in AI model rankings on VibeBench. Clean, fast, and built with professional TypeScript practices.
+![VibeBench Leaderboard](images/leaderboard-screenshot.png)
 
 ## Features
 
 - **Interactive & Direct Voting** - Vote on AI models with fire/mid/cursed ratings
 - **Real-time Leaderboards** - View top models with vote breakdowns
-- **Model Statistics** - Get detailed stats for any AI model
+- **Model Statistics** - Get detailed stats for 200+ AI models
 - **Rate Limit Tracking** - Monitor your voting quota
 - **Fuzzy Search** - Smart model name suggestions for typos
 - **Zero Configuration** - Works out of the box
@@ -36,7 +37,7 @@ npx vibebench --help
 vibebench vote
 
 # Direct voting
-vibebench vote claude-3.5-sonnet fire "Amazing reasoning capabilities!"
+vibebench vote claude-3.5-sonnet cursed "deleted half of my codebase"
 
 # View current leaderboard
 vibebench top
@@ -48,18 +49,8 @@ vibebench models
 vibebench status
 
 # Get detailed statistics for a model
-vibebench stats gpt-4o
+vibebench stats gpt-5
 ```
-
-## 📖 Commands
-
-| Command                         | Description                              | Example                                         |
-| ------------------------------- | ---------------------------------------- | ----------------------------------------------- |
-| `vote [model] [type] [comment]` | Vote on a model (interactive if no args) | `vibebench vote gpt-4 fire "Great performance"` |
-| `top [count]`                   | Show leaderboard (default: top 10)       | `vibebench top 5`                               |
-| `models`                        | List all available models by rank        | `vibebench models`                              |
-| `stats <model>`                 | Get detailed statistics for a model      | `vibebench stats claude-3.5-sonnet`             |
-| `status`                        | Check your rate limit and voting quota   | `vibebench status`                              |
 
 ## Vote Types
 
@@ -102,64 +93,8 @@ Top 10 Models
 
 ### Prerequisites
 
-- Node.js 16.0.0 or higher
+- Node.js 18.0.0 or higher
 - npm or yarn
-
-### Setup
-
-```bash
-# Clone the repository
-git clone https://github.com/denis-kolbas/vibebench-cli.git
-cd vibebench-cli
-
-# Install dependencies
-npm install
-
-# Build the project
-npm run build
-
-# Run locally
-npm start -- --help
-```
-
-### Available Scripts
-
-- `npm run build` - Compile TypeScript to JavaScript
-- `npm run dev` - Watch mode for development
-- `npm start` - Run the compiled CLI
-- `npm test` - Run test suite (when implemented)
-- `npm run clean` - Clean build directory
-
-## 📁 Project Structure
-
-```
-vibebench-cli/
-├── src/
-│   ├── commands/          # CLI command implementations
-│   │   ├── vote.ts       # Voting functionality
-│   │   ├── top.ts        # Leaderboard display
-│   │   ├── models.ts     # Model listing
-│   │   ├── stats.ts      # Model statistics
-│   │   └── status.ts     # Rate limit status
-│   ├── lib/
-│   │   ├── api-client.ts # VibeBench API wrapper
-│   │   ├── formatters.ts # Output formatting utilities
-│   │   ├── styles.ts     # Consistent styling system
-│   │   └── types.ts      # TypeScript type definitions
-│   └── index.ts          # Main CLI entry point
-├── bin/                  # Executable scripts
-└── dist/                # Compiled JavaScript (generated)
-```
-
-## 🔧 Built By Denis Kolbas
-
-My personal CLI tool for VibeBench, built with modern TypeScript and CLI best practices:
-
-- **[Commander.js](https://github.com/tj/commander.js/)** - Command-line framework
-- **[Inquirer.js](https://github.com/SBoudrias/Inquirer.js)** - Interactive command prompts
-- **[cli-table3](https://github.com/cli-table/cli-table3)** - Professional table formatting
-- **[Chalk](https://github.com/chalk/chalk)** - Terminal styling
-- **TypeScript** - Type-safe JavaScript
 
 ## License
 

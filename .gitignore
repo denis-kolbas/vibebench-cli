@@ -36,3 +36,4 @@ logs/
 # Coverage
 coverage/
 .nyc_output
+.vercel
