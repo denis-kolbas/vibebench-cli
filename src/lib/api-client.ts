@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+// Using native fetch API (Node.js 18+)
 import { VoteRequest, VoteResponse, LeaderboardEntry, RateLimitStatus, APIError } from './types.js';
 
 const API_BASE_URL = 'https://vibebench.io';
