@@ -1,8 +1,8 @@
-import inquirer from 'inquirer';
+import { select, input } from '@inquirer/prompts';
 import { VibeBenchAPI } from '../lib/api-client.js';
 import { VoteType } from '../lib/types.js';
 import { formatVoteType, formatSuccess, formatError, formatModelStats } from '../lib/formatters.js';
-import { promptStyles, typography } from '../lib/styles.js';
+import { typography } from '../lib/styles.js';
 
 export async function voteCommand(api: VibeBenchAPI, model?: string, type?: string, comment?: string): Promise<void> {
   try {
@@ -77,51 +77,45 @@ async function interactiveVote(api: VibeBenchAPI): Promise<void> {
     const models = await api.getLeaderboard();
     
     // Interactive prompts
-    const answers = await inquirer.prompt([
-      {
-        type: 'list',
-        name: 'model',
-        message: 'Select a model to vote on',
-        choices: models.map(m => ({
-          name: m.slug,
-          value: m.slug
-        })),
-        pageSize: 20
-      },
-      {
-        type: 'list',
-        name: 'voteType',
-        message: 'How would you rate this model',
-        choices: [
-          { name: '🔥 Fire - Excellent performance', value: 'fire' },
-          { name: '😐 Mid - Average performance', value: 'mid' },
-          { name: '💀 Cursed - Poor performance', value: 'cursed' }
-        ]
-      },
-      {
-        type: 'input',
-        name: 'comment',
-        message: 'Optional comment',
-        default: ''
-      }
-    ]);
+    const model = await select({
+      message: 'Select a model to vote on',
+      choices: models.map(m => ({
+        name: m.slug,
+        value: m.slug
+      })),
+      pageSize: 20
+    });
+
+    const voteType = await select({
+      message: 'How would you rate this model',
+      choices: [
+        { name: '🔥 Fire - Excellent performance', value: 'fire' },
+        { name: '😐 Mid - Average performance', value: 'mid' },
+        { name: '💀 Cursed - Poor performance', value: 'cursed' }
+      ]
+    });
+
+    const comment = await input({
+      message: 'Optional comment',
+      default: ''
+    });
 
     // Submit vote
     const response = await api.vote({
-      modelSlug: answers.model,
-      voteType: answers.voteType,
-      comment: answers.comment || undefined
+      modelSlug: model,
+      voteType: voteType as VoteType,
+      comment: comment || undefined
     });
 
     if (response.success) {
       console.log('');
-      console.log(formatSuccess(`Voted ${formatVoteType(answers.voteType)} for ${answers.model}`));
+      console.log(formatSuccess(`Voted ${formatVoteType(voteType as VoteType)} for ${model}`));
       
       if (response.updatedModel) {
         // Create proper model data structure from API response
         const modelData = {
-          slug: answers.model,
-          name: answers.model, // Use slug as name since API doesn't return full model details
+          slug: model,
+          name: model, // Use slug as name since API doesn't return full model details
           category: 'Unknown',
           vibeScore: response.updatedModel.vibeScore || 0,
           votes: response.updatedModel.votes || { fire: 0, mid: 0, cursed: 0, total: 0 }

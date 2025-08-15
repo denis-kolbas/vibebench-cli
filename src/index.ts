@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
+import { readFileSync } from 'fs';
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
 import { VibeBenchAPI } from './lib/api-client.js';
 import { voteCommand } from './commands/vote.js';
 import { statsCommand } from './commands/stats.js';
@@ -8,13 +11,19 @@ import { topCommand } from './commands/top.js';
 import { modelsCommand } from './commands/models.js';
 import { statusCommand } from './commands/status.js';
 
+// Get package.json version
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const packageJson = JSON.parse(readFileSync(join(__dirname, '../package.json'), 'utf8'));
+const version = packageJson.version;
+
 const program = new Command();
 const api = new VibeBenchAPI();
 
 program
   .name('vibebench')
   .description('CLI tool for VibeBench - vote on AI models from your terminal')
-  .version('1.0.0');
+  .version(version);
 
 // Register commands
 program
