@@ -5,7 +5,7 @@
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "vibebench": "bin/vibebench.js"
+    "vibebench": "bin/vibebench.cjs"
   },
   "scripts": {
     "build": "tsc",
