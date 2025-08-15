@@ -1,6 +1,6 @@
 {
   "name": "vibebench",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "CLI tool for VibeBench - vote on AI models from your terminal",
   "type": "module",
   "main": "dist/index.js",
