@@ -86,8 +86,7 @@ async function interactiveVote(api: VibeBenchAPI): Promise<void> {
           name: m.slug,
           value: m.slug
         })),
-        pageSize: 20,
-        prefix: promptStyles.prefix
+        pageSize: 20
       },
       {
         type: 'list',
@@ -97,15 +96,13 @@ async function interactiveVote(api: VibeBenchAPI): Promise<void> {
           { name: '🔥 Fire - Excellent performance', value: 'fire' },
           { name: '😐 Mid - Average performance', value: 'mid' },
           { name: '💀 Cursed - Poor performance', value: 'cursed' }
-        ],
-        prefix: promptStyles.prefix
+        ]
       },
       {
         type: 'input',
         name: 'comment',
         message: 'Optional comment',
-        default: '',
-        prefix: promptStyles.prefix
+        default: ''
       }
     ]);
 

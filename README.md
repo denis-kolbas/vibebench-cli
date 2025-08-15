@@ -7,7 +7,7 @@
 > **CLI tool for participating in voting on AI vibes on VibeBench.** ⚡  
 > Visit [vibebench.io](https://vibebench.io) to see the live leaderboard and vote on the web
 
-![VibeBench Leaderboard](images/leaderboard-screenshot.png)
+![VibeBench Leaderboard](images/vibebench-leaderboard.png)
 
 ## Features
 
